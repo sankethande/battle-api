@@ -106,6 +106,123 @@ async function search(req, res) {
 }
 
 /**
+ * Get distinct values with count for given column/key
+ */
+function getGroupCountPromise(col) {
+    return BattleModel
+        .aggregate([
+            {
+                $group: {
+                    _id: `$${col}`,
+                    count: {
+                        $sum: 1
+                    }
+                }
+            },
+            {
+                $sort: {
+                    "count": -1
+                }
+            }
+        ])
+        .exec();
+}
+
+/**
+ * min, max and avg for defender size
+ */
+function getDefenderStatsPromise() {
+    return BattleModel
+        .aggregate([
+            {
+                $match: {
+                    defender_size: {
+                        $gte: 0
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    max: {
+                        $max: "$defender_size"
+                    },
+                    min: {
+                        $min: "$defender_size"
+                    },
+                    avg: {
+                        $avg: "$defender_size"
+                    }
+                }
+            }
+        ])
+        .exec();
+}
+
+/**
+ * @api {get} /v1/battle/stats Statistics of all battles
+ * @apiGroup Battle
+ * @apiName BattleStats
+ */
+async function stats(req, res) {
+    const fetchGroupCountList = [
+        "attacker_king",
+        "defender_king",
+        "region",
+        "name",
+        "attacker_outcome",
+        "battle_type"
+    ];    
+    
+    // we'll pushing results to this
+    const groupCounts = {};
+    
+    // To find the most active we group that key
+    // get count of each group
+    // sort by count descending
+    const groupCountPromiseArray = [];
+    for (let col of fetchGroupCountList) {
+        groupCountPromiseArray.push(getGroupCountPromise(col));
+    }
+    (await Promise.all(groupCountPromiseArray)).map((result, index) => {
+        groupCounts[fetchGroupCountList[index]] = result;
+    });
+    
+    
+    const mostActive = {};
+    for (let col of ["attacker_king", "defender_king", "region", "name"]) {
+        mostActive[col] = groupCounts[col][0]._id;
+    }
+    
+    const attackerOutcome = {};
+    for (let row of groupCounts.attacker_outcome) {
+        if (row._id) {
+            attackerOutcome[row._id] = row.count;
+        }
+    }
+    
+    const battleType = [];
+    for (let row of groupCounts.battle_type) {
+        if (row._id) {
+            battleType.push(row._id);
+        }
+    }
+    
+    // get min, max and avg for defender size
+    const defenderSizeStats = await getDefenderStatsPromise();
+    
+    // send response
+    res.send({
+        data: {
+            most_active: mostActive,
+            attacker_outcome: attackerOutcome,
+            battle_type: battleType,
+            defender_size: defenderSizeStats
+        }
+    });
+}
+
+/**
  * Function for testing MongoDb write permission
  */
 /*
@@ -122,5 +239,6 @@ function testMongoDb() {
 module.exports = {
     getAll,
     getCount,
-    search
+    search,
+    stats
 };
