@@ -7,6 +7,8 @@ We are using some ES6 features like rest operator. So latest version of node (pr
 We are using ESLint to force some best practices. Below are some key rules
 - 4 spaces indentation
 - Doble quotes
+- Although we are extensively using asyn await still we prefer not to try catch in every controller function.
+"express-async-errors" takes care of it for us. This module enables express error handling middleware to catch async errors.
 
 ## Development server
 ```npm run start-local```

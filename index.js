@@ -9,6 +9,7 @@ app.get("/", (req, res) => res.send("Hello World!"));
 app.use("/v1/battle", battleRouter);
 
 // custom error handlers
+// this will also catch async errors since we are usign express-async-errors
 // eslint-disable-next-line no-unused-vars
 app.use(function (err, req, res, next) {
     console.log(err);
