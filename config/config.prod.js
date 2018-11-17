@@ -4,5 +4,6 @@
  * So for examply mongoDbUrl for production database will go here
  */
 module.exports = {
-    mongoDbUrl: "mongodb://<user>:<pass>@<ulr>:<port>/<database>"
+    mongoDbUrl: process.env.mongoDbUrl || "mongodb://<user>:<pass>@<ulr>:<port>/<database>",
+    httpPort: process.env.PORT || 3000
 };
