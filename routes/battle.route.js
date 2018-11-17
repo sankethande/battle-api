@@ -4,5 +4,6 @@ const BattleController = require("../controllers/battle.controller");
 
 router.get("/list", BattleController.getAll);
 router.get("/count", BattleController.getCount);
+router.get("/search", BattleController.search);
 
 module.exports = router;

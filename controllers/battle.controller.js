@@ -34,6 +34,55 @@ async function getCount(req, res) {
     });
 }
 
+async function search(req, res) {
+    // start with empty search array
+    // we will fill this as we encouter appropriate query params
+    const searchObj = [];
+    
+    // search for king
+    if (req.query.king) {
+        searchObj.push({
+            $or: [
+                {attacker_king: new RegExp(req.query.king)},
+                {defender_king: new RegExp(req.query.king)}
+            ]
+        });
+    }
+    
+    // search for location
+    if (req.query.location) {
+        searchObj.push({
+            location: new RegExp(req.query.location)
+        });
+    }
+    
+    // search for type
+    if (req.query.type) {
+        searchObj.push({
+            battle_type: new RegExp(req.query.type)
+        });
+    }
+    
+    // if nothing provided to search then throw 400
+    if (searchObj.length === 0) {
+        return res
+            .status(400)
+            .send({
+                error: "Nothing to search"
+            });
+    }
+    
+    // fetch count from database
+    const allBattles = await BattleModel.find().and(searchObj).exec();
+    
+    // send response
+    res.send({
+        data: {
+            battles: allBattles
+        }
+    });
+}
+
 /**
  * Function for testing MongoDb write permission
  */
@@ -50,5 +99,6 @@ function testMongoDb() {
 
 module.exports = {
     getAll,
-    getCount
+    getCount,
+    search
 };
