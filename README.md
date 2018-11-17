@@ -12,3 +12,8 @@ We are using ESLint to force some best practices. Below are some key rules
 ```npm run start-local```
 Above command will start the app in development mode.
 In development mode ESLint will be activated.
+
+## Importing CSV to MongoDb
+```
+mongoimport -h <host>:<port> -d <database> -c <collection> --type csv -u <user> -p <password> --file <path to .csv> --headerline
+```
