@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Api for fetching battle data",
   "main": "index.js",
+  "engines": {
+    "node": ">=8.3.0"
+  },
   "scripts": {
     "start-local": "eslint --ignore-path .gitignore . && nodemon index.js --exec 'npm run lint && node'",
     "lint": "eslint --ignore-path .gitignore .",
