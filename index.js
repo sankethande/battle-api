@@ -4,7 +4,11 @@ const BattleRouter = require("./routes/battle.route");
 const AuthRouter = require("./routes/auth.route");
 const jwtMiddleware = require("./middlewares/jwt.middleware");
 const { httpPort } = require("./config/config");
+const path = require("path");
 const app = express();
+
+// let's have documentation at the root
+app.use(express.static("doc"));
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -19,8 +23,9 @@ app.use(function(req, res, next) {
     next();
 });
 
-// Welcome message just in case someone accesses base domain
-app.get("/", (req, res) => res.send("Welcome to Battle API"));
+app.get("/docs", function(req, res) {
+    res.sendFile(path.join(__dirname + "/doc/index.html"));
+});
 
 // router rules for auth
 app.use("/v1/auth", AuthRouter);
