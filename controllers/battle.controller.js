@@ -52,7 +52,7 @@ async function getCount(req, res) {
 }
 
 /**
- * @api {get} /v1/battle/seach Search battles
+ * @api {get} /v1/battle/search Search battles
  * @apiGroup Battle
  * @apiName SearchBattles
  *
@@ -159,6 +159,14 @@ function getDefenderStatsPromise() {
                     avg: {
                         $avg: "$defender_size"
                     }
+                }
+            },
+            {
+                $project: {
+                    max: 1,
+                    min: 1,
+                    avg: 1,
+                    _id: 0
                 }
             }
         ])
