@@ -1,5 +1,13 @@
 const { BattleModel } = require("../db");
 
+/**
+ * @api {get} /v1/battle/list Get all battle list
+ * @apiGroup Battle
+ * @apiName GetAllBattles
+ *
+ * @apiParam {Number} skip Offset useful for pagination
+ * @apiParam {Number} limit No of entries to fetch
+ */
 async function getAll(req, res) {
     // if skip in query string use it else default to 0
     const skip = +req.query.skip ? +req.query.skip : 0;
@@ -22,6 +30,11 @@ async function getAll(req, res) {
     });
 }
 
+/**
+ * @api {get} /v1/battle/count Get total number of battles
+ * @apiGroup Battle
+ * @apiName GetBattlesCount
+ */
 async function getCount(req, res) {
     // fetch count from database
     const count = await BattleModel.count({}).exec();
@@ -34,6 +47,15 @@ async function getCount(req, res) {
     });
 }
 
+/**
+ * @api {get} /v1/battle/seach Search battles
+ * @apiGroup Battle
+ * @apiName SearchBattles
+ *
+ * @apiParam {String} king Attacker or Defender king to search for
+ * @apiParam {String} location Location where battle was fought
+ * @apiParam {String} type Battle type
+ */
 async function search(req, res) {
     // start with empty search array
     // we will fill this as we encouter appropriate query params

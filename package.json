@@ -9,11 +9,13 @@
   "scripts": {
     "start-local": "eslint --ignore-path .gitignore . && nodemon index.js --exec 'npm run lint && node'",
     "lint": "eslint --ignore-path .gitignore .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docs": "apidoc -i ./ -e node_modules/"
   },
   "author": "Sanket Subhash Hande",
   "license": "GPL-3.0",
   "dependencies": {
+    "apidoc": "^0.17.7",
     "express": "^4.16.4",
     "express-async-errors": "^3.1.1",
     "mongoose": "^5.3.12"
