@@ -11,7 +11,8 @@
   "author": "Sanket Subhash Hande",
   "license": "GPL-3.0",
   "dependencies": {
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "mongoose": "^5.3.12"
   },
   "devDependencies": {
     "eslint": "^5.8.0",
