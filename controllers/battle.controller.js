@@ -5,6 +5,8 @@ const { BattleModel } = require("../db");
  * @apiGroup Battle
  * @apiName GetAllBattles
  *
+ * @apiHeader {String} token JWT token geneated from /login
+ *
  * @apiParam {Number} skip Offset useful for pagination
  * @apiParam {Number} limit No of entries to fetch
  */
@@ -34,6 +36,8 @@ async function getAll(req, res) {
  * @api {get} /v1/battle/count Get total number of battles
  * @apiGroup Battle
  * @apiName GetBattlesCount
+ *
+ * @apiHeader {String} token JWT token geneated from /login
  */
 async function getCount(req, res) {
     // fetch count from database
@@ -52,6 +56,8 @@ async function getCount(req, res) {
  * @apiGroup Battle
  * @apiName SearchBattles
  *
+ * @apiHeader {String} token JWT token geneated from /login
+ *
  * @apiParam {String} king Attacker or Defender king to search for
  * @apiParam {String} location Location where battle was fought
  * @apiParam {String} type Battle type
@@ -61,7 +67,7 @@ async function search(req, res) {
     // we will fill this as we encouter appropriate query params
     const searchObj = [];
     
-    // search for king
+    // search for king; attacker_king Or defender_king
     if (req.query.king) {
         searchObj.push({
             $or: [
@@ -90,7 +96,7 @@ async function search(req, res) {
         return res
             .status(400)
             .send({
-                error: "Nothing to search"
+                error: ["Nothing to search"]
             });
     }
     
@@ -163,6 +169,8 @@ function getDefenderStatsPromise() {
  * @api {get} /v1/battle/stats Statistics of all battles
  * @apiGroup Battle
  * @apiName BattleStats
+ *
+ * @apiHeader {String} token JWT token geneated from /login
  */
 async function stats(req, res) {
     const fetchGroupCountList = [

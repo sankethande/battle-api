@@ -1,19 +1,36 @@
 const express = require("express");
-const battleRouter = require("./routes/battle.route");
+const bodyParser = require("body-parser");
+const BattleRouter = require("./routes/battle.route");
+const AuthRouter = require("./routes/auth.route");
+const jwtMiddleware = require("./middlewares/jwt.middleware");
+const { httpPort } = require("./config/config");
 const app = express();
-const port = 3000;
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// parse application/json
+app.use(bodyParser.json());
 
 // enable CORS
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, token");
     next();
 });
 
-app.get("/", (req, res) => res.send("Hello World!"));
+// Welcome message just in case someone accesses base domain
+app.get("/", (req, res) => res.send("Welcome to Battle API"));
 
-// router rules
-app.use("/v1/battle", battleRouter);
+// router rules for auth
+app.use("/v1/auth", AuthRouter);
+
+// NOTE - we are using jwtMiddleware after auth
+// this is to skip token checks for auth routes
+app.use(jwtMiddleware);
+
+// battle api routes
+app.use("/v1/battle", BattleRouter);
 
 // custom error handlers
 // this will also catch async errors since we are usign express-async-errors
@@ -21,8 +38,8 @@ app.use("/v1/battle", battleRouter);
 app.use(function (err, req, res, next) {
     console.log(err);
     res.status(500).send({
-        message: "Unexpected error occurred"
+        error: ["Unexpected error occurred"]
     });
 });
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+app.listen(httpPort, () => console.log(`Battle API app listening on port ${httpPort}!`));
