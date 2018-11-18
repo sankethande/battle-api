@@ -1,14 +1,16 @@
 # battle-api
 
 ## Requirements
-We are using some ES6 features like rest operator. So latest version of node (preferably > ```8.3.0```) is recommended.
+We are using some ES6 features like rest operator. So latest version of node (atleast > ```8.3.0```) is recommended.
 
-## Documentation
-To generate documentation run
+## Installation
 ```
-npm run docs
+git clone https://github.com/sankethande/battle-api.git
+cd battle-api
+npm install
+npm start
 ```
-This will create a ```doc``` directory. Refer docs/index.html for API documentation.
+Visit http://127.0.0.1:3000 in your browser.
 
 ## Coding guidelines
 We are using ESLint to force some best practices. Below are some key rules
